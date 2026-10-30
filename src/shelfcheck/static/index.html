@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shelf Check</title>
+<style>
+:root{--ink:#1d2433;--mut:#5d6779;--line:#e3e7ef;--bg:#f6f4f1;--card:#fff;--acc:#2f5d50;--acc2:#e9f1ee;--good:#2e7d4f;--care:#b7791f;--poor:#b4382f;--chip:#eef1f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:18px 16px 6px;max-width:760px;margin:0 auto}
+header h1{margin:0;font-size:26px;letter-spacing:-.01em}
+header p{margin:4px 0 0;color:var(--mut)}
+main{max-width:760px;margin:0 auto;padding:8px 16px 32px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
+.step{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.step b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;font-size:14px}
+.step h2{margin:0;font-size:18px}
+.hint{color:var(--mut);font-size:14px;margin:6px 0 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,.btn{appearance:none;border:0;border-radius:10px;background:var(--acc);color:#fff;font:600 15px system-ui;padding:11px 16px;cursor:pointer}
+button.ghost{background:var(--acc2);color:var(--acc)}
+button:disabled{opacity:.5;cursor:default}
+input[type=file]{display:none}
+input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:#fff}
+textarea{min-height:110px;resize:vertical}
+label.f{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+.face{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.face img{width:120px;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:none}
+.bars{flex:1;min-width:240px}
+.bar{display:grid;grid-template-columns:110px 1fr 34px;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.track{height:9px;background:#edf0f4;border-radius:6px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:6px}
+.verdict{border-radius:12px;padding:14px 16px;color:#fff;margin-bottom:10px}
+.verdict h3{margin:0;font-size:22px}
+.verdict p{margin:4px 0 0;opacity:.95}
+.v-good{background:var(--good)}.v-care{background:var(--care)}.v-poor{background:var(--poor)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.e{display:inline-block;padding:1px 8px;border-radius:9px;font-size:12px;font-weight:600}
+.e-helps{background:#e3f3ea;color:var(--good)}.e-neutral{background:var(--chip);color:var(--mut)}.e-worsens{background:#fbe7e5;color:var(--poor)}
+.split{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--care)}
+.why{color:var(--mut);font-size:13px;margin-top:3px}
+.status{font-size:14px;color:var(--mut);margin-top:10px;min-height:20px}
+.err{color:var(--poor)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #cfd6df;border-top-color:var(--acc);border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.hidden{display:none}
+.tablewrap{overflow-x:auto}
+footer{max-width:760px;margin:0 auto;padding:0 16px 28px;color:var(--mut);font-size:13px}
+@media (max-width:480px){.bar{grid-template-columns:92px 1fr 30px}header h1{font-size:23px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Shelf Check</h1>
+  <p>One selfie, then any skincare product: does it suit <em>your</em> skin before you buy?</p>
+</header>
+<main>
+  <section class="card" id="s1">
+    <div class="step"><b>1</b><h2>Measure your skin</h2></div>
+    <div class="row">
+      <label class="btn" for="file">Take or upload a selfie</label>
+      <input id="file" type="file" accept="image/*" capture="user">
+      <button class="ghost" id="demo" type="button">Use the demo face</button>
+    </div>
+    <p class="hint">Face the camera, even light, no glasses, hair off the forehead. We fit the photo to what the analysis needs.</p>
+    <div class="face" style="margin-top:12px">
+      <img id="preview" alt="Your photo">
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="status" id="st1"></div>
+  </section>
+
+  <section class="card hidden" id="s2">
+    <div class="step"><b>2</b><h2>Paste the product</h2></div>
+    <label class="f" for="pname">Product name</label>
+    <input id="pname" type="text" placeholder="e.g. Daily Gel Cleanser">
+    <label class="f" for="ing">Ingredients (copy them from the product page)</label>
+    <textarea id="ing" placeholder="Water, Glycerin, Niacinamide, ..."></textarea>
+    <div class="row" style="margin-top:12px">
+      <button id="check" type="button">Check this product</button>
+      <button class="ghost" id="sample" type="button">Try a sample product</button>
+    </div>
+    <div class="status" id="st2"></div>
+  </section>
+
+  <section class="card hidden" id="s3">
+    <div class="step"><b>3</b><h2>Fit for your skin</h2></div>
+    <div id="verdict"></div>
+    <div class="tablewrap"><table id="tbl"></table></div>
+    <div id="dissent" class="hint"></div>
+  </section>
+</main>
+<footer>Skin analysis by the YouCam API (Perfect Corp.), AI Skin Analysis. Product fit judged by three independent AI models from three different makers. Not medical advice. Your photo is sent only to the skin analysis and is not stored by this app.</footer>
+<script>
+const LABEL={acne:"Acne",moisture:"Moisture",oiliness:"Oil control",pore:"Pores",redness:"Redness",texture:"Texture",wrinkle:"Wrinkles",dark_circle_v2:"Dark circles"};
+const $=id=>document.getElementById(id);
+let SKIN=null;
+function status(el,msg,busy,err){el.innerHTML=(busy?'<span class="spin"></span>':'')+(err?'<span class="err">'+msg+'</span>':msg)}
+function loadImage(src){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src})}
+// Fit the photo: scale so the short side is <= 1080 px, then optionally pad (face too big) or crop (face too small).
+function fit(img,mode){
+  let w=img.naturalWidth,h=img.naturalHeight,sx=0,sy=0,sw=w,sh=h;
+  if(mode==="crop"){sw=Math.round(w*.72);sh=Math.round(h*.72);sx=Math.round((w-sw)/2);sy=Math.round((h-sh)/2.4)}
+  const s=Math.min(1,1080/Math.min(sw,sh)); let W=Math.round(sw*s),H=Math.round(sh*s);
+  const pad=mode==="pad"?Math.round(W*.22):0;
+  if(Math.min(W,H)<480){const k=480/Math.min(W,H);W=Math.round(W*k);H=Math.round(H*k)}
+  const c=document.createElement("canvas");c.width=W+2*pad;c.height=H+2*pad;
+  const x=c.getContext("2d");x.fillStyle="#d6d8db";x.fillRect(0,0,c.width,c.height);x.drawImage(img,sx,sy,sw,sh,pad,pad,W,H);
+  return c.toDataURL("image/jpeg",.92).split(",")[1];
+}
+async function post(path,body){
+  const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok)throw new Error(d.error||("Request failed ("+r.status+")"));return d;
+}
+async function analyze(src){
+  $("preview").src=src;$("preview").style.display="block";$("bars").innerHTML="";
+  const img=await loadImage(src);
+  const tries=[["as-is",""],["pad","Adjusting framing (face too close)…"],["crop","Adjusting framing (face too far)…"]];
+  let order=["as-is"],last=null;
+  for(let i=0;i<3;i++){
+    const mode=order[i]||null; if(!mode)break;
+    status($("st1"),i?tries.find(t=>t[0]===mode)[1]:"Analysing your skin with YouCam AI Skin Analysis…",true);
+    try{const d=await post("/analyze",{image_b64:fit(img,mode)});return d.skin}
+    catch(e){last=e;const m=e.message||"";
+      if(m.includes("out_of_bound")&&!order.includes("pad"))order.push("pad");
+      else if(m.includes("too_small")&&!order.includes("crop"))order.push("crop");
+      else break}
+  }
+  throw last;
+}
+function drawBars(skin){
+  const keys=Object.keys(LABEL).filter(k=>skin[k]);
+  $("bars").innerHTML='<div class="hint" style="margin:0 0 6px">Higher is healthier</div>'+keys.map(k=>{
+    const v=skin[k].ui_score,c=v>=80?"var(--good)":v>=65?"var(--care)":"var(--poor)";
+    return '<div class="bar"><span>'+LABEL[k]+'</span><span class="track"><i style="width:'+v+'%;background:'+c+'"></i></span><b>'+v+'</b></div>'}).join("");
+}
+async function run(src){
+  try{SKIN=await analyze(src);drawBars(SKIN);status($("st1"),"Skin measured on 8 concerns.");$("s2").classList.remove("hidden");$("s2").scrollIntoView({behavior:"smooth"})}
+  catch(e){status($("st1"),"Could not analyse this photo: "+e.message+". Try a front-facing selfie in even light.",false,true)}
+}
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>run(r.result);r.readAsDataURL(f)};
+$("demo").onclick=()=>run("/demo-face.jpg");
+$("sample").onclick=()=>{$("pname").value="Sample Gel Cleanser";$("ing").value="Water, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Salicylic Acid, Niacinamide, Alcohol Denat., Fragrance (Parfum), Menthol, Citric Acid, Sodium Benzoate, Limonene, Linalool"};
+const VT={good:["Good fit","This product supports your measured skin."],care:["Use with care","Some ingredients help, some may not suit you."],poor:["Poor fit","This product may work against your skin."]};
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+$("check").onclick=async()=>{
+  const ing=$("ing").value.trim();if(!SKIN){status($("st2"),"Measure your skin first.",false,true);return}
+  if(ing.length<10){status($("st2"),"Paste the ingredient list first.",false,true);return}
+  $("check").disabled=true;status($("st2"),"Three independent AI models are reading the ingredients against your skin…",true);
+  try{
+    const d=await post("/check",{skin:SKIN,product_name:$("pname").value.trim()||"This product",ingredients:ing});
+    const vt=VT[d.verdict]||VT.care,agree=Math.round(d.agreement*d.judges);
+    $("verdict").innerHTML='<div class="verdict v-'+d.verdict+'"><h3>'+vt[0]+'</h3><p>'+vt[1]+' '+agree+' of '+d.judges+' models agree.</p></div>';
+    const judges=Object.keys(d.answers||{}).filter(j=>d.answers[j]);
+    const why={};judges.forEach(j=>(d.answers[j].concerns||[]).forEach(c=>{const k=String(c.concern||"").toLowerCase();if(!why[k]&&c.why)why[k]={t:c.why,ing:(c.ingredients||[]).join(", ")}}));
+    let h='<tr><th>Concern</th>'+judges.map((j,i)=>'<th>Model '+(i+1)+'</th>').join("")+'</tr>';
+    Object.keys(LABEL).filter(k=>d.per_concern[k]).forEach(k=>{const pc=d.per_concern[k];
+      h+='<tr><td><b>'+LABEL[k]+'</b>'+(pc.split?'<span class="split">SPLIT</span>':'')+(why[k]?'<div class="why">'+esc(why[k].t)+(why[k].ing?' <i>('+esc(why[k].ing)+')</i>':'')+'</div>':'')+'</td>'+
+      judges.map(j=>{const e=pc.effects[j]||"neutral";return '<td><span class="e e-'+esc(e)+'">'+esc(e)+'</span></td>'}).join("")+'</tr>'});
+    $("tbl").innerHTML=h;
+    $("dissent").innerHTML=(d.dissent&&d.dissent.length?d.dissent.length+" model(s) reached a different overall verdict. ":"All models reached the same overall verdict. ")+"Models: "+judges.map((j,i)=>"Model "+(i+1)+" = "+esc(j)).join(" · ");
+    status($("st2"),"");$("s3").classList.remove("hidden");$("s3").scrollIntoView({behavior:"smooth"});
+  }catch(e){status($("st2"),"Check failed: "+e.message,false,true)}
+  $("check").disabled=false;
+};
+</script>
+</body>
+</html>
