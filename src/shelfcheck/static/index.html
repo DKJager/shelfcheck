@@ -1,50 +1,3 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shelf Check</title>
-<style>
-:root{--ink:#1d2433;--mut:#5d6779;--line:#e3e7ef;--bg:#f6f4f1;--card:#fff;--acc:#2f5d50;--acc2:#e9f1ee;--good:#2e7d4f;--care:#b7791f;--poor:#b4382f;--chip:#eef1f6}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{padding:18px 16px 6px;max-width:760px;margin:0 auto}
-header h1{margin:0;font-size:26px;letter-spacing:-.01em}
-header p{margin:4px 0 0;color:var(--mut)}
-main{max-width:760px;margin:0 auto;padding:8px 16px 32px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
-.step{display:flex;align-items:center;gap:10px;margin:0 0 10px}
-.step b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;font-size:14px}
-.step h2{margin:0;font-size:18px}
-.hint{color:var(--mut);font-size:14px;margin:6px 0 0}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-button,.btn{appearance:none;border:0;border-radius:10px;background:var(--acc);color:#fff;font:600 15px system-ui;padding:11px 16px;cursor:pointer}
-button.ghost{background:var(--acc2);color:var(--acc)}
-button:disabled{opacity:.5;cursor:default}
-input[type=file]{display:none}
-input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:#fff}
-textarea{min-height:110px;resize:vertical}
-label.f{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
-.face{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
-.face img{width:120px;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:none}
-.bars{flex:1;min-width:240px}
-.bar{display:grid;grid-template-columns:110px 1fr 34px;gap:8px;align-items:center;font-size:14px;margin:6px 0}
-.track{height:9px;background:#edf0f4;border-radius:6px;overflow:hidden}
-.track i{display:block;height:100%;border-radius:6px}
-.verdict{border-radius:12px;padding:14px 16px;color:#fff;margin-bottom:10px}
-.verdict h3{margin:0;font-size:22px}
-.verdict p{margin:4px 0 0;opacity:.95}
-.v-good{background:var(--good)}.v-care{background:var(--care)}.v-poor{background:var(--poor)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
-.e{display:inline-block;padding:1px 8px;border-radius:9px;font-size:12px;font-weight:600}
-.e-helps{background:#e3f3ea;color:var(--good)}.e-neutral{background:var(--chip);color:var(--mut)}.e-worsens{background:#fbe7e5;color:var(--poor)}
-.split{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--care)}
-.why{color:var(--mut);font-size:13px;margin-top:3px}
-.status{font-size:14px;color:var(--mut);margin-top:10px;min-height:20px}
-.err{color:var(--poor)}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid #cfd6df;border-top-color:var(--acc);border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes s{to{transform:rotate(360deg)}}
 .hidden{display:none}
 .tablewrap{overflow-x:auto}
@@ -93,7 +46,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 28px;color:var(--mut);font-s
     <div id="dissent" class="hint"></div>
   </section>
 </main>
-<footer>Skin analysis by the YouCam API (Perfect Corp.), AI Skin Analysis. Product fit judged by three independent AI models from three different makers. Not medical advice. Your photo is sent only to the skin analysis and is not stored by this app.</footer>
+<footer>Skin analysis by the YouCam API (Perfect Corp.), AI Skin Analysis. Product fit judged by three independent AI models from three different makers. Not medical advice. Your photo is sent only to the skin analysis and is not stored by this app.<br><a href="/shop">See it on a store page</a></footer>
 <script>
 const LABEL={acne:"Acne",moisture:"Moisture",oiliness:"Oil control",pore:"Pores",redness:"Redness",texture:"Texture",wrinkle:"Wrinkles",dark_circle_v2:"Dark circles"};
 const $=id=>document.getElementById(id);

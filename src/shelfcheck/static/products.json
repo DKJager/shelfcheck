@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Sample Gel Cleanser",
+    "description": "A refreshing foaming gel that deeply cleanses pores",
+    "ingredients": ["Water", "Salicylic Acid", "Niacinamide", "Fragrance (Parfum)", "Alcohol Denat.", "Menthol", "Glycerin"]
+  },
+  {
+    "name": "Sample Barrier Cream",
+    "description": "A rich moisturizer that supports the skin barrier",
+    "ingredients": ["Water", "Ceramide NP", "Glycerin", "Squalane", "Panthenol", "Shea Butter"]
+  },
+  {
+    "name": "Sample Retinol Serum",
+    "description": "A nightly serum for smoother, younger-looking skin",
+    "ingredients": ["Water", "Retinol", "Alcohol Denat.", "Hyaluronic Acid", "Tocopherol", "Fragrance (Parfum)"]
+  }
+]

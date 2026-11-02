@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Skincare Shop</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --card: #fff;
+      --text: #1a1a1a;
+      --mut: #555;
+      --border: #ddd;
+      --good: #2e8b57;
+      --care: #ff8c00;
+      --poor: #dc3545;
+      --link: #0066cc;
+      --btn: #0066cc;
+      --btn-h: #0052a3;
+      --btn-text: #fff;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .banner {
+      background: var(--poor);
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-size: 14px;
+    }
+    .banner p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    .shop-title {
+      font-size: 28px;
+      text-align: center;
+      margin: 20px 0 16px;
+      color: var(--text);
+    }
+    .skin-panel {
+      max-width: 760px;
+      margin: 0 auto 24px;
+      padding: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .skin-panel h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+    .skin-panel p {
+      color: var(--mut);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .score-item {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .score-item strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .no-storage-warning {
+      font-size: 12px;
+      color: var(--mut);
+      margin-top: 8px;
+      font-style: italic;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 0 16px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .product {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    .product h3 {
+      font-size: 18px;
+      padding: 16px 16px 0;
+      margin: 0;
+    }
+    .product p {
+      padding: 0 16px;
+      margin: 8px 0;
+      color: var(--mut);
+      font-size: 14px;
+    }
+    .ingredients {
+      padding: 0 16px 8px;
+      font-size: 13px;
+      color: var(--mut);
+    }
+    .ingredients ul {
+      list-style: disc;
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+    .ingredients li {
+      margin: 4px 0;
+    }
+    .buttons {
+      padding: 8px 16px 16px;
+      display: flex;
+      gap: 8px;
+    }
+    .check-btn {
+      flex: 1;
+      padding: 10px 12px;
+      background: var(--btn);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .check-btn:hover {
+      background: var(--btn-h);
+    }
+    .result {
+      margin-top: 12px;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .verdict {
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .verdict.v-good { color: var(--good); }
+    .verdict.v-care { color: var(--care); }
+    .verdict.v-poor { color: var(--poor); }
+    .timing {
+      font-size: 12px;
+      color: var(--mut);
+      margin: 4px 0;
+    }
+    .concern-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .concern-table th, .concern-table td {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .concern-table th {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .effect-helps {
+      color: var(--good);
+    }
+    .effect-worsens {
+      color: var(--poor);
+    }
+    .effect-neutral {
+      color: var(--mut);
+    }
+    .split {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      margin-left: 6px;
+      font-weight: 600;
+    }
+    .dissent {
+      font-size: 12px;
+      color: var(--mut);
+      margin: 8px 0;
+      font-style: italic;
+    }
+    .compare-section {
+      max-width: 1200px;
+      margin: 0 auto 24px;
+      padding: 0 16px;
+    }
+    .compare-section h2 {
+      font-size: 20px;
+      margin: 16px 0 12px;
+      color: var(--text);
+    }
+    .compare-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    select {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .compare-btn {
+      padding: 10px 16px;
+      background: var(--btn);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .compare-btn:hover {
+      background: var(--btn-h);
+    }
+    .waiting-message {
+      padding: 12px;
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .compare-results {
+      display: none;
+    }
+    .compare-results.active {
+      display: block;
+    }
+    .product-results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .product-result {
+      padding: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .product-result h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .product-result .verdict {
+      margin: 8px 0;
+      font-weight: 600;
+    }
+    .product-result .timing {
+      font-size: 12px;
+      color: var(--mut);
+      margin: 4px 0;
+    }
+    .concerns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .concern-item {
+      padding: 8px;
+      background: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .concern-item b {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .badge-help {
+      background: #d4edda;
+      color: var(--good);
+      border: 1px solid #c3e6cb;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .badge-worsen {
+      background: #f8d7da;
+      color: var(--poor);
+      border: 1px solid #f5c6cb;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .badge-neutral {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    footer {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 16px 28px;
+      color: var(--mut);
+      font-size: 13px;
+      text-align: center;
+    }
+    @keyframes s{to{transform:rotate(360deg)}}
+    .hidden{display:none}
+    .tablewrap{overflow-x:auto}
+    @media (max-width:768px) {
+      .product-results {
+        grid-template-columns: 1fr;
+      }
+      .compare-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      select {
+        min-width: unset;
+      }
+    }
+  
+#preview{max-height:220px;width:auto;border-radius:10px;margin:8px 0}
+.demo-face-btn,.upload-btn{padding:10px 16px;border-radius:8px;border:1px solid #0a66c2;background:#fff;color:#0a66c2;font:inherit;font-weight:600;cursor:pointer;margin:0 8px 8px 0}
+.demo-face-btn:hover,.upload-btn:hover{background:#eef5fc}
+.err{color:#b42318}
+.bar{display:grid;grid-template-columns:110px 1fr 34px;align-items:center;gap:10px;margin:6px 0;font-size:14px}
+.track{display:block;height:9px;background:#e6e8eb;border-radius:5px;overflow:hidden}
+.track i{display:block;height:100%}
+.result:empty{display:none}
+.product-grid{align-items:start}
+</style>
+</head>
+<body>
+  <div class="banner">
+    <h1>FICTIONAL PRODUCTS ONLY</h1>
+    <p>demo store, not a real shop</p>
+  </div>
+  <h1 class="shop-title">Demo Skincare Shop</h1>
+
+  <div class="skin-panel" id="skinPanel">
+    <h3>Skin analysis</h3>
+    <p>To check product fit, we need your skin scores.</p>
+    <div class="row">
+      <button class="demo-face-btn" id="demoFaceBtn">Use the demo face</button>
+      <button class="upload-btn" id="uploadBtn">Upload a selfie</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none;">
+    </div>
+    <p class="hint">Face the camera, even light, no glasses, hair off the forehead. We fit the photo to what the analysis needs.</p>
+    <div class="face" style="margin-top:12px">
+      <img id="preview" alt="Your photo" style="max-width:100%;display:none;">
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="status" id="st1"></div>
+    <p class="no-storage-warning">Scores are kept in memory for this visit only; they are not saved to any storage.</p>
+  </div>
+
+  <div class="product-grid" id="productGrid">
+    <!-- Products loaded from /products.json will appear here -->
+  </div>
+
+  <div class="compare-section">
+    <h2>Compare two</h2>
+    <div class="compare-controls">
+      <select id="compare-a">
+        <option value="">Select first product</option>
+      </select>
+      <select id="compare-b">
+        <option value="">Select second product</option>
+      </select>
+      <button class="compare-btn" id="compareBtn">Compare selected products</button>
+    </div>
+    <div class="waiting-message" id="waitingMessage" style="display:none;">
+      Asking 3 independent models. This can take from a few seconds to over a minute.
+    </div>
+    <div class="compare-results" id="compareResults">
+      <div class="product-results" id="productResults"></div>
+    </div>
+  </div>
+
+  <footer>
+    Skin analysis by YouCam API (Perfect Corp.). Fit judged by three independent AI models. Not medical advice.
+  </footer>
+
+  <script>
+    const LABEL = {acne:"Acne",moisture:"Moisture",oiliness:"Oil control",pore:"Pores",redness:"Redness",texture:"Texture",wrinkle:"Wrinkles",dark_circle_v2:"Dark circles"};
+    let skinScores = null;
+    let products = [];
+    let pendingCheck = null;
+    let pendingCompare = false;
+    const $ = id => document.getElementById(id);
+
+    function status(el, msg, busy, err) {
+      el.innerHTML = (busy ? '<span class="spin"></span>' : '') + (err ? '<span class="err">' + msg + '</span>' : msg);
+    }
+
+    async function loadImage(src) {
+      return new Promise((ok, no) => {
+        const i = new Image();
+        i.onload = () => ok(i);
+        i.onerror = no;
+        i.src = src;
+      });
+    }
+
+    function fit(img, mode) {
+      let w = img.naturalWidth, h = img.naturalHeight, sx = 0, sy = 0, sw = w, sh = h;
+      if (mode === "crop") {
+        sw = Math.round(w * .72);
+        sh = Math.round(h * .72);
+        sx = Math.round((w - sw) / 2);
+        sy = Math.round((h - sh) / 2.4);
+      }
+      const s = Math.min(1, 1080 / Math.min(sw, sh));
+      let W = Math.round(sw * s), H = Math.round(sh * s);
+      const pad = mode === "pad" ? Math.round(W * .22) : 0;
+      if (Math.min(W, H) < 480) {
+        const k = 480 / Math.min(W, H);
+        W = Math.round(W * k);
+        H = Math.round(H * k);
+      }
+      const c = document.createElement("canvas");
+      c.width = W + 2 * pad;
+      c.height = H + 2 * pad;
+      const x = c.getContext("2d");
+      x.fillStyle = "#d6d8db";
+      x.fillRect(0, 0, c.width, c.height);
+      x.drawImage(img, sx, sy, sw, sh, pad, pad, W, H);
+      return c.toDataURL("image/jpeg", .92).split(",")[1];
+    }
+
+    async function post(path, body) {
+      const opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+      let r = await fetch(path, opts);
+      if (r.status === 502 || r.status === 503) r = await fetch(path, opts);
+      let d = {};
+      try {
+        d = await r.json();
+      } catch (e) {}
+      if (!r.ok) throw new Error(d.error || ("Request failed (" + r.status + ")"));
+      return d;
+    }
+
+    async function analyze(src) {
+      $("preview").src = src;
+      $("preview").style.display = "block";
+      $("bars").innerHTML = "";
+      const img = await loadImage(src);
+      const tries = [["as-is", ""], ["pad", "Adjusting framing (face too close)…"], ["crop", "Adjusting framing (face too far)…"]];
+      let order = ["as-is"], last = null;
+      for (let i = 0; i < 3; i++) {
+        const mode = order[i] || null;
+        if (!mode) break;
+        status($("st1"), i ? tries.find(t => t[0] === mode)[1] : "Analysing your skin with YouCam AI Skin Analysis…", true);
+        try {
+          const d = await post("/analyze", { image_b64: fit(img, mode) });
+          return d.skin;
+        } catch (e) {
+          last = e;
+          const m = e.message || "";
+          if (m.includes("out_of_bound") && !order.includes("pad")) order.push("pad");
+          else if (m.includes("too_small") && !order.includes("crop")) order.push("crop");
+          else break;
+        }
+      }
+      throw last;
+    }
+
+    function drawBars(skin) {
+      const keys = Object.keys(LABEL).filter(k => skin[k]);
+      $("bars").innerHTML = '<div class="hint" style="margin:0 0 6px">Higher is healthier</div>' + keys.map(k => {
+        const v = skin[k].ui_score;
+        const c = v >= 80 ? "var(--good)" : v >= 65 ? "var(--care)" : "var(--poor)";
+        return '<div class="bar"><span>' + LABEL[k] + '</span><span class="track"><i style="width:' + v + '%;background:' + c + '"></i></span><b>' + v + '</b></div>';
+      }).join("");
+    }
+
+    async function run(src) {
+      try {
+        skinScores = await analyze(src);
+        drawBars(skinScores);
+        status($("st1"), "Skin measured on " + Object.keys(LABEL).filter(k => skinScores[k]).length + " concerns.");
+        if (pendingCompare) { pendingCompare = false; $("compareBtn").click(); }
+        if (pendingCheck) {
+          const prodElem = pendingCheck;
+          pendingCheck = null;
+          await checkSingleProduct(prodElem);
+        }
+      } catch (e) {
+        const m = String(e.message || e); status($("st1"), /50[234]/.test(m) ? "The skin analysis service is busy right now. Please try again in a minute." : "Could not analyse this photo: " + m + ". Try a front-facing selfie in even light.", false, true);
+      }
+    }
+
+    $("fileInput").onchange = e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => run(r.result);
+      r.readAsDataURL(f);
+    };
+
+    $("uploadBtn").onclick = () => $("fileInput").click();
+
+    $("demoFaceBtn").onclick = () => run("/demo-face.jpg");
+
+    async function loadProducts() {
+      try {
+        const resp = await fetch('/products.json');
+        products = await resp.json();
+        const grid = $("productGrid");
+        const selectA = $("compare-a");
+        const selectB = $("compare-b");
+
+        selectA.innerHTML = '<option value="">Select first product</option>';
+        selectB.innerHTML = '<option value="">Select second product</option>';
+
+        products.forEach((prod, idx) => {
+          const prodId = 'prod-' + idx;
+          const card = document.createElement('div');
+          card.className = 'product';
+          card.id = prodId;
+          card.innerHTML = `
+            <h3>${prod.name}</h3>
+            <p>${prod.description}</p>
+            <div class="ingredients">
+              <ul>
+                ${prod.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="buttons">
+              <button class="check-btn" data-product-id="${prodId}">Check fit for my skin</button>
+            </div>
+            <div class="result" id="result-${prodId}"></div>
+          `;
+          grid.appendChild(card);
+
+          const opt = document.createElement('option');
+          opt.value = prodId;
+          opt.textContent = prod.name;
+          selectA.appendChild(opt.cloneNode(true));
+          selectB.appendChild(opt);
+        });
+
+        attachCheckButtons();
+      } catch (e) {
+        console.error("Failed to load products:", e);
+      }
+    }
+
+    function attachCheckButtons() {
+      document.querySelectorAll('.check-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const prodId = btn.getAttribute('data-product-id');
+          const prodElem = document.getElementById(prodId);
+          await checkSingleProduct(prodElem);
+        });
+      });
+    }
+
+    const VT = {
+      good: ["Good fit", "This product supports your measured skin."],
+      care: ["Use with care", "Some ingredients help, some may not suit you."],
+      poor: ["Poor fit", "This product may work against your skin."]
+    };
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+    }
+
+    async function checkSingleProduct(productElem) {
+      if (!skinScores) {
+        pendingCheck = productElem;
+        $("skinPanel").style.display = "block";
+        $("st1").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      const name = productElem.querySelector('h3').textContent;
+      const ingredientArray = Array.from(productElem.querySelectorAll('.ingredients li')).map(li => li.textContent.trim());
+      const ingredients = ingredientArray.join(", ");
+      const resultDiv = $("result-" + productElem.id);
+      const button = productElem.querySelector('.check-btn');
+
+      button.disabled = true;
+      resultDiv.innerHTML = '<div class="timing">Asking 3 independent models. This can take from a few seconds to over a minute.</div>';
+
+      try {
+        const d = await post("/check", {
+          skin: skinScores,
+          product_name: name,
+          ingredients: ingredients
+        });
+
+        const vt = VT[d.verdict] || VT.care;
+        const agree = Math.round(d.agreement * d.timing.total);
+        const timingText = `${d.timing.responded}/${d.timing.total} models responded in ${d.timing.seconds.toFixed(1)} s`;
+
+        let h = '<tr><th>Concern</th><th>Effect</th></tr>';
+        Object.keys(LABEL).filter(k => d.per_concern[k]).forEach(k => {
+          const pc = d.per_concern[k];
+          const judges = Object.keys(pc.effects);
+          const helps = judges.filter(j => pc.effects[j] === "helps").length;
+          const worsens = judges.filter(j => pc.effects[j] === "worsens").length;
+          let majority = "neutral";
+          if (helps > worsens && helps > judges.length / 2) majority = "helps";
+          else if (worsens > helps && worsens > judges.length / 2) majority = "worsens";
+          h += `<tr><td><b>${LABEL[k]}</b>${pc.split ? '<span class="split">SPLIT</span>' : ''}</td><td><span class="effect-${majority}">${majority}</span></td></tr>`;
+        });
+
+        const dissentText = d.dissent && d.dissent.length ? `Dissent: ${d.dissent.join(", ")}` : '';
+
+        resultDiv.innerHTML = `
+          <div class="verdict v-${d.verdict}">${vt[0]}</div>
+          <div class="timing"><b>${Math.round(d.agreement * d.timing.total)} of ${d.timing.total} models agree</b></div>
+          <div class="timing">${timingText}</div>
+          <table class="concern-table">${h}</table>
+          ${dissentText ? `<div class="dissent">${dissentText}</div>` : ''}
+        `;
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="err">Check failed: ${e.message}</div>`;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    $("compareBtn").onclick = async () => {
+      const selectA = $("compare-a");
+      const selectB = $("compare-b");
+      const idA = selectA.value;
+      const idB = selectB.value;
+      if (!idA || !idB) {
+        status($("productResults"), "Please select two products.", false, true);
+        return;
+      }
+      if (idA === idB) {
+        status($("productResults"), "Select two different products.", false, true);
+        return;
+      }
+
+      if (!skinScores) {
+        pendingCompare = true;
+        $("skinPanel").style.display = "block";
+        $("st1").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      const waiting = $("waitingMessage");
+      const results = $("compareResults");
+      const productResults = $("productResults");
+      waiting.style.display = "block";
+      results.classList.remove("active");
+      productResults.innerHTML = "";
+
+      const elemA = document.getElementById(idA);
+      const elemB = document.getElementById(idB);
+
+      const nameA = elemA.querySelector('h3').textContent;
+      const nameB = elemB.querySelector('h3').textContent;
+
+      const ingredientArrayA = Array.from(elemA.querySelectorAll('.ingredients li')).map(li => li.textContent.trim());
+      const ingredientArrayB = Array.from(elemB.querySelectorAll('.ingredients li')).map(li => li.textContent.trim());
+
+      const ingredientsA = ingredientArrayA.join(", ");
+      const ingredientsB = ingredientArrayB.join(", ");
+
+      const payloadA = { product_name: nameA, ingredients: ingredientsA, skin: skinScores };
+      const payloadB = { product_name: nameB, ingredients: ingredientsB, skin: skinScores };
+
+      try {
+        const [respA, respB] = await Promise.all([
+          post("/check", payloadA),
+          post("/check", payloadB)
+        ]);
+
+        waiting.style.display = "none";
+        results.classList.add("active");
+
+        const makeResultHtml = (result, label) => {
+          const vt = VT[result.verdict] || VT.care;
+          const agree = Math.round(result.agreement * result.timing.total);
+          const timingText = `${result.timing.responded}/${result.timing.total} models responded in ${result.timing.seconds.toFixed(1)} s`;
+          const dissentText = result.dissent && result.dissent.length ? `Dissent: ${result.dissent.join(", ")}` : '';
+
+          let h = '<tr><th>Concern</th><th>Effect</th></tr>';
+          Object.keys(LABEL).filter(k => result.per_concern[k]).forEach(k => {
+            const pc = result.per_concern[k];
+            const judges = Object.keys(pc.effects);
+            const helps = judges.filter(j => pc.effects[j] === "helps").length;
+            const worsens = judges.filter(j => pc.effects[j] === "worsens").length;
+            let majority = "neutral";
+            if (helps > worsens && helps > judges.length / 2) majority = "helps";
+            else if (worsens > helps && worsens > judges.length / 2) majority = "worsens";
+            h += `<tr><td><b>${LABEL[k]}</b>${pc.split ? '<span class="split">SPLIT</span>' : ''}</td><td><span class="effect-${majority}">${majority}</span></td></tr>`;
+          });
+
+          return `
+            <div class="product-result">
+              <h3>${label}</h3>
+              <div class="verdict v-${result.verdict}">${vt[0]}</div>
+              <div class="timing"><b>${agree} of ${result.timing.total} models agree</b></div>
+              <div class="timing">${timingText}</div>
+              <table class="concern-table">${h}</table>
+              ${dissentText ? `<div class="dissent">${dissentText}</div>` : ''}
+            </div>
+          `;
+        };
+
+        productResults.innerHTML = makeResultHtml(respA, nameA) + makeResultHtml(respB, nameB);
+      } catch (error) {
+        waiting.style.display = "none";
+        status(productResults, "Comparison failed: " + error.message + ". Please try again.", false, true);
+      }
+    };
+
+    loadProducts();
+  </script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import urllib.request
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Callable, Dict, List
 
@@ -23,7 +24,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 # Helper utilities
 # --------------------------------------------------------------------------- #
 
-
 def _json_response(body: Any, status: int = 200) -> Dict[str, Any]:
     """Return a Lambda‑proxy compatible JSON response."""
     return {
@@ -31,7 +31,6 @@ def _json_response(body: Any, status: int = 200) -> Dict[str, Any]:
         "headers": {"Content-Type": "application/json"},
         "body": json.dumps(body, ensure_ascii=False),
     }
-
 
 def _html_response(html: str, status: int = 200) -> Dict[str, Any]:
     """Return a Lambda‑proxy compatible HTML response."""
@@ -41,16 +40,13 @@ def _html_response(html: str, status: int = 200) -> Dict[str, Any]:
         "body": html,
     }
 
-
 def _error(message: str, status: int) -> Dict[str, Any]:
     """Convenient wrapper for JSON error responses."""
     return _json_response({"error": message}, status)
 
-
 # --------------------------------------------------------------------------- #
 # NEBIUS model request factory
 # --------------------------------------------------------------------------- #
-
 
 def make_ask_fns() -> Dict[str, Callable[[List[Dict[str, str]]], str]]:
     """Create a mapping ``judge → callable(messages)`` that invokes the NEBIUS API.
@@ -100,11 +96,9 @@ def make_ask_fns() -> Dict[str, Callable[[List[Dict[str, str]]], str]]:
 
     return {judge: _make_caller(model) for judge, model in judges.items()}
 
-
 # --------------------------------------------------------------------------- #
 # Lazy import helper for internal modules
 # --------------------------------------------------------------------------- #
-
 
 def _load_internal_modules() -> tuple[Any, Any]:
     """Import the internal panel and youcam modules."""
@@ -117,11 +111,9 @@ def _load_internal_modules() -> tuple[Any, Any]:
     except ImportError as e:
         raise RuntimeError(f"Cannot import required module: {e}") from e
 
-
 # --------------------------------------------------------------------------- #
 # Lambda handler
 # --------------------------------------------------------------------------- #
-
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """AWS Lambda handler.
@@ -137,7 +129,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         path = event.get("path") or event.get("rawPath") or http.get("path") or "/"
 
         # --------------------------------------------------------------- #
-        # GET /
+        # GET / and static assets
         # --------------------------------------------------------------- #
         if method == "GET" and path == "/":
             index_path = os.path.join(os.path.dirname(__file__), "static", "index.html")
@@ -154,6 +146,26 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 img = base64.b64encode(f.read()).decode("ascii")
             return {"statusCode": 200, "headers": {"Content-Type": "image/jpeg", "Cache-Control": "max-age=3600"},
                     "body": img, "isBase64Encoded": True}
+
+        if method == "GET" and path == "/shop":
+            shop_path = os.path.join(os.path.dirname(__file__), "static", "shop.html")
+            try:
+                with open(shop_path, "r", encoding="utf-8") as f:
+                    html = f.read()
+                return _html_response(html)
+            except FileNotFoundError:
+                return _error("Static shop.html not found", 500)
+
+        if method == "GET" and path == "/products.json":
+            json_path = os.path.join(os.path.dirname(__file__), "static", "products.json")
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                return _json_response(data)
+            except FileNotFoundError:
+                return _error("Static products.json not found", 500)
+            except json.JSONDecodeError:
+                return _error("Invalid JSON in products.json", 500)
 
         # --------------------------------------------------------------- #
         # POST /analyze
@@ -204,6 +216,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # POST /check
         # --------------------------------------------------------------- #
         if method == "POST" and path == "/check":
+            start_time = time.time()
             raw_body = event.get("body", "")
             if event.get("isBase64Encoded"):
                 try:
@@ -268,6 +281,18 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
             # Include raw parsed answers for each judge
             consensus["answers"] = parsed
+
+            # Count judges that returned parsable output
+            responded = sum(1 for v in parsed.values() if v is not None)
+            total = len(ask_fns)
+            elapsed = time.time() - start_time
+
+            # Add timing field as required
+            consensus["timing"] = {
+                "responded": responded,
+                "total": total,
+                "seconds": elapsed
+            }
 
             return _json_response(consensus)
 

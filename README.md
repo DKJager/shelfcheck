@@ -73,7 +73,7 @@ Create a Python 3.12 Lambda with handler `shelfcheck.app.lambda_handler`, 512 MB
 
 ## Team
 
-Alan Finney, 3Dogs Nexus (https://3dogs.ai).
+Alan Finney and Tammy Finney, 3Dogs Nexus (https://3dogs.ai).
 
 ## License
 
