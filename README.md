@@ -6,6 +6,8 @@ Built for the YouCam API Skin AI & eCommerce VTO Hackathon (submission period Se
 
 **Live demo:** https://rb3zrvsjhltwkfpadydcasehyu0iqlcu.lambda-url.us-east-2.on.aws/ — press "Use the demo face", then "Try a sample product", then "Check this product". No sign-in.
 
+**Store demo:** https://rb3zrvsjhltwkfpadydcasehyu0iqlcu.lambda-url.us-east-2.on.aws/shop — a fictional demo store where each product card has a "Check fit for my skin" button that reads the ingredient list from the page, plus "Compare two" for a side-by-side verdict on the same skin. Scores live in the page for that visit only; nothing is stored.
+
 ## The problem
 
 Online skincare shoppers buy from marketing copy written for everyone. They can't tell whether a product suits their own skin until after they've bought it, and they often return it or give up on it. Retailers pay for those wrong purchases in returns, refunds and lost trust.
@@ -16,6 +18,9 @@ Online skincare shoppers buy from marketing copy written for everyone. They can'
 2. **Paste.** The shopper pastes a product's ingredient list from any product page.
 3. **Judge.** Three independent AI models from three different makers read the ingredient list against *that* skin, concern by concern. Each says whether every concern is *helped*, *neutral* or *worsened*, and cites the ingredients behind it.
 4. **Decide.** One verdict (**Good fit / Use with care / Poor fit**), how many models agree, a **SPLIT** badge wherever the models disagree on a concern, and the dissenting model's verdict.
+5. **Shop.** On the store page, the same check runs from a button on each product card, and two products can be compared side by side for the same skin. Every result shows a timing line such as "3/3 models responded in 18.4 s".
+
+Timing, measured on the live demo: skin analysis usually 5–7 s; a product check usually 15–30 s, sometimes over a minute when the models are busy.
 
 Showing where independent models disagree is the point. A single model gives one confident answer. Three models from different makers show which parts are settled and which still need a closer look.
 
@@ -44,8 +49,10 @@ AWS Lambda, Python 3.12, stdlib only (src/shelfcheck/app.py)
 | `src/shelfcheck/panel.py` | Judge prompt, robust JSON parsing, concern-name normalisation, reconciliation |
 | `src/shelfcheck/app.py` | Lambda handler (works with Function URLs and API Gateway events) |
 | `src/shelfcheck/static/index.html` | Mobile-first UI |
+| `src/shelfcheck/static/shop.html` | Fictional demo store: per-card check and compare two |
+| `src/shelfcheck/static/products.json` | Three fictional products, no real brands |
 | `src/shelfcheck/static/demo-face.jpg` | Demo face: **AI-generated (synthetic), not a real person** |
-| `tests/test_shelfcheck.py` | 5 tests, no network |
+| `tests/test_shelfcheck.py`, `tests/test_upgrade.py` | 10 tests, no network |
 | `tools/local_server.py` | Run the same handler locally |
 
 ## Run it locally
