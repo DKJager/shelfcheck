@@ -61,8 +61,8 @@ def make_ask_fns() -> Dict[str, Callable[[List[Dict[str, str]]], str]]:
 
     endpoint = "https://api.tokenfactory.nebius.com/v1/chat/completions"
     judges = {
-        "qwen3-235b": "Qwen/Qwen3-235B-A22B-Instruct-2507",
-        "deepseek-v4-flash": "deepseek-ai/DeepSeek-V4-Flash-0731",
+        "qwen3-30b": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+        "deepseek-v4.1-flash": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
         "gpt-oss-120b": "openai/gpt-oss-120b",
     }
 

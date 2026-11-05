@@ -39,9 +39,17 @@ Browser (single HTML page, no external JS)
 AWS Lambda, Python 3.12, stdlib only (src/shelfcheck/app.py)
    ├─► YouCam AI Skin Analysis API ──► 8 concern scores
    └─► 3 judges in parallel (Nebius Token Factory, OpenAI-compatible API)
-         Qwen3-235B (Alibaba) · DeepSeek-V4-Flash (DeepSeek) · gpt-oss-120b (OpenAI open-weight)
+         Qwen3-30B (Alibaba) · DeepSeek-V4.1-Flash (DeepSeek) · gpt-oss-120b (OpenAI open-weight)
          └─► panel.py: parse JSON → majority verdict, agreement, per-concern split, dissent
 ```
+
+**Model retirement, 9 Nov 2026.** Nebius retired `Qwen/Qwen3-235B-A22B-Instruct-2507` and `deepseek-ai/DeepSeek-V4-Flash-0731` from serverless use on 9 Nov 2026 ([notice](https://docs.tokenfactory.nebius.com/november-2026-deprecation-notice)). On 5 Nov the live app moved to the recommended replacements, `Qwen/Qwen3-30B-A3B-Instruct-2507` and `deepseek-ai/DeepSeek-V4.1-Flash-1017`; `gpt-oss-120b` is unchanged. The panel still has three makers.
+
+Measured on the three demo-store products for the same skin, old panel against new:
+- **Verdicts:** the old panel said "care" on all three. The new panel matched that on all three in one run; in a second run it said "good" on the Barrier Cream.
+- **Speed:** all three judges responded in 6 to 10 s, against 27 to 37 s before.
+
+The hackathon video and judging were recorded on the earlier models.
 
 | File | Role |
 |---|---|
